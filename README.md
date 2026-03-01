@@ -50,6 +50,9 @@ The scooter is resolved in order:
 ## Usage
 
 ```bash
+# Scooter status
+sunshine status                          # Full scooter details
+
 # List scooters
 sunshine scooters list [--limit 20] [--offset 0]
 sunshine scooters show
@@ -61,7 +64,7 @@ sunshine honk
 sunshine blinkers <left|right|both|off>
 sunshine seatbox
 sunshine ping
-sunshine state
+sunshine state                           # Request telemetry refresh
 sunshine locate
 sunshine hibernate
 
