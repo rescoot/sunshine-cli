@@ -50,8 +50,8 @@ The scooter is resolved in order:
 ## Usage
 
 ```bash
-# Scooter status
-sunshine status                          # Full scooter details
+# Scooter status (full telemetry: batteries, engine, GPS, connectivity, system, power)
+sunshine status
 
 # List scooters
 sunshine scooters list [--limit 20] [--offset 0]
