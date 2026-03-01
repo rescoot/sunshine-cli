@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var scooterListLimit int
+var scooterListOffset int
+
 var scootersCmd = &cobra.Command{
 	Use:   "scooters",
 	Short: "Manage scooters",
@@ -17,7 +20,7 @@ var scootersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your scooters",
 	Run: func(cmd *cobra.Command, args []string) {
-		scooters, err := apiClient.ListScooters()
+		scooters, err := apiClient.ListScooters(scooterListLimit, scooterListOffset)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -47,6 +50,8 @@ var scootersShowCmd = &cobra.Command{
 }
 
 func init() {
+	scootersListCmd.Flags().IntVar(&scooterListLimit, "limit", 20, "Maximum number of scooters to return (0 for all)")
+	scootersListCmd.Flags().IntVar(&scooterListOffset, "offset", 0, "Number of scooters to skip")
 	scootersCmd.AddCommand(scootersListCmd)
 	scootersCmd.AddCommand(scootersShowCmd)
 	rootCmd.AddCommand(scootersCmd)

@@ -155,6 +155,39 @@ func PrintTripList(trips []api.Trip) {
 	w.Flush()
 }
 
+func PrintTripDetail(t *api.Trip) {
+	if JSONOutput {
+		PrintJSON(t)
+		return
+	}
+
+	kv := [][]string{
+		{"ID", fmt.Sprintf("%d", t.ID)},
+	}
+	if t.StartedAt != nil {
+		kv = append(kv, []string{"Started", t.StartedAt.Local().Format("2006-01-02 15:04:05")})
+	}
+	if t.EndedAt != nil {
+		kv = append(kv, []string{"Ended", t.EndedAt.Local().Format("2006-01-02 15:04:05")})
+	}
+	if t.Duration != nil {
+		kv = append(kv, []string{"Duration", formatDuration(*t.Duration)})
+	}
+	if t.Distance != nil {
+		kv = append(kv, []string{"Distance", fmt.Sprintf("%.1f km", float64(*t.Distance)/1000)})
+	}
+	if t.AvgSpeed != nil {
+		kv = append(kv, []string{"Avg Speed", fmt.Sprintf("%.0f km/h", float64(*t.AvgSpeed))})
+	}
+	if t.StartLocation != nil {
+		kv = append(kv, []string{"Start", fmt.Sprintf("%.4f, %.4f", t.StartLocation.Lat, t.StartLocation.Lng)})
+	}
+	if t.EndLocation != nil {
+		kv = append(kv, []string{"End", fmt.Sprintf("%.4f, %.4f", t.EndLocation.Lat, t.EndLocation.Lng)})
+	}
+	printKeyValue(kv)
+}
+
 func PrintDestination(dest *api.Destination) {
 	if JSONOutput {
 		PrintJSON(dest)

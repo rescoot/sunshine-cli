@@ -160,9 +160,20 @@ func (c *Client) getValidTokens() (*auth.TokenSet, error) {
 
 // Scooters
 
-func (c *Client) ListScooters() ([]Scooter, error) {
+func (c *Client) ListScooters(limit, offset int) ([]Scooter, error) {
 	var scooters []Scooter
-	err := c.get("/scooters", &scooters)
+	path := "/scooters"
+	params := []string{}
+	if limit > 0 {
+		params = append(params, fmt.Sprintf("limit=%d", limit))
+	}
+	if offset > 0 {
+		params = append(params, fmt.Sprintf("offset=%d", offset))
+	}
+	if len(params) > 0 {
+		path += "?" + strings.Join(params, "&")
+	}
+	err := c.get(path, &scooters)
 	return scooters, err
 }
 
@@ -242,6 +253,24 @@ func (c *Client) Alarm(id int, duration string) (*CommandResponse, error) {
 	return &resp, err
 }
 
+func (c *Client) AlarmArm(id int) (*CommandResponse, error) {
+	var resp CommandResponse
+	err := c.post(fmt.Sprintf("/scooters/%d/alarm_arm", id), nil, &resp)
+	return &resp, err
+}
+
+func (c *Client) AlarmDisarm(id int) (*CommandResponse, error) {
+	var resp CommandResponse
+	err := c.post(fmt.Sprintf("/scooters/%d/alarm_disarm", id), nil, &resp)
+	return &resp, err
+}
+
+func (c *Client) AlarmStop(id int) (*CommandResponse, error) {
+	var resp CommandResponse
+	err := c.post(fmt.Sprintf("/scooters/%d/alarm_stop", id), nil, &resp)
+	return &resp, err
+}
+
 func (c *Client) Hibernate(id int) (*CommandResponse, error) {
 	var resp CommandResponse
 	err := c.post(fmt.Sprintf("/scooters/%d/hibernate", id), nil, &resp)
@@ -250,10 +279,27 @@ func (c *Client) Hibernate(id int) (*CommandResponse, error) {
 
 // Trips
 
-func (c *Client) ListTrips(scooterID int) ([]Trip, error) {
+func (c *Client) ListTrips(scooterID, limit, offset int) ([]Trip, error) {
 	var trips []Trip
-	err := c.get(fmt.Sprintf("/scooters/%d/trips", scooterID), &trips)
+	path := fmt.Sprintf("/scooters/%d/trips", scooterID)
+	params := []string{}
+	if limit > 0 {
+		params = append(params, fmt.Sprintf("limit=%d", limit))
+	}
+	if offset > 0 {
+		params = append(params, fmt.Sprintf("offset=%d", offset))
+	}
+	if len(params) > 0 {
+		path += "?" + strings.Join(params, "&")
+	}
+	err := c.get(path, &trips)
 	return trips, err
+}
+
+func (c *Client) GetTrip(scooterID, tripID int) (*Trip, error) {
+	var trip Trip
+	err := c.get(fmt.Sprintf("/scooters/%d/trips/%d", scooterID, tripID), &trip)
+	return &trip, err
 }
 
 // Destinations
