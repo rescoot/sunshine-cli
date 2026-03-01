@@ -70,14 +70,14 @@ type GPS struct {
 }
 
 type Trip struct {
-	ID              int        `json:"id"`
-	StartedAt       *time.Time `json:"started_at"`
-	EndedAt         *time.Time `json:"ended_at"`
-	Distance        *float64   `json:"distance"`
-	AvgSpeed        *float64   `json:"avg_speed"`
-	DurationSeconds *int       `json:"duration_seconds"`
-	StartLocation   *Location  `json:"start_location"`
-	EndLocation     *Location  `json:"end_location"`
+	ID            int          `json:"id"`
+	StartedAt     *time.Time   `json:"started_at"`
+	EndedAt       *time.Time   `json:"ended_at"`
+	Distance      *StringFloat `json:"distance"`
+	AvgSpeed      *StringFloat `json:"avg_speed"`
+	Duration      *int         `json:"duration"`
+	StartLocation *Location    `json:"start_location"`
+	EndLocation   *Location    `json:"end_location"`
 }
 
 type Location struct {

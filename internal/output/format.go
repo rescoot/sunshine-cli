@@ -140,15 +140,15 @@ func PrintTripList(trips []api.Trip) {
 		}
 		dist := "-"
 		if t.Distance != nil {
-			dist = fmt.Sprintf("%.1f km", *t.Distance)
+			dist = fmt.Sprintf("%.1f km", float64(*t.Distance)/1000)
 		}
 		dur := "-"
-		if t.DurationSeconds != nil {
-			dur = formatDuration(*t.DurationSeconds)
+		if t.Duration != nil {
+			dur = formatDuration(*t.Duration)
 		}
 		speed := "-"
 		if t.AvgSpeed != nil {
-			speed = fmt.Sprintf("%.0f km/h", *t.AvgSpeed)
+			speed = fmt.Sprintf("%.0f km/h", float64(*t.AvgSpeed))
 		}
 		fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\n", t.ID, date, dist, dur, speed)
 	}
