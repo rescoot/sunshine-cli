@@ -23,7 +23,7 @@ var statusCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
-		output.PrintScooterDetail(scooter)
+		output.PrintScooterStatus(scooter)
 	},
 }
 

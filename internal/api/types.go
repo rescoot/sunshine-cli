@@ -57,8 +57,15 @@ type Telemetry struct {
 	Engine       map[string]interface{} `json:"engine"`
 	Battery0     map[string]interface{} `json:"battery0"`
 	Battery1     map[string]interface{} `json:"battery1"`
+	AuxBattery   map[string]interface{} `json:"aux_battery"`
+	CBBBattery   map[string]interface{} `json:"cbb_battery"`
+	System       map[string]interface{} `json:"system"`
 	GPS          *GPS                   `json:"gps"`
 	Connectivity map[string]interface{} `json:"connectivity"`
+	Power        map[string]interface{} `json:"power"`
+	BLE          map[string]interface{} `json:"ble"`
+	Keycard      map[string]interface{} `json:"keycard"`
+	Dashboard    map[string]interface{} `json:"dashboard"`
 }
 
 type GPS struct {
