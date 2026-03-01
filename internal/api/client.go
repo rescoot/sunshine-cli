@@ -158,6 +158,73 @@ func (c *Client) getValidTokens() (*auth.TokenSet, error) {
 	return tokens, nil
 }
 
+// DoRaw performs an authenticated HTTP request and returns the raw response body.
+func (c *Client) DoRaw(method, path string, body interface{}) ([]byte, int, error) {
+	tokens, err := c.getValidTokens()
+	if err != nil {
+		return nil, 0, fmt.Errorf("authentication required: run 'sunshine auth login' first")
+	}
+
+	url := c.baseURL + path
+
+	var bodyReader io.Reader
+	if body != nil {
+		data, err := json.Marshal(body)
+		if err != nil {
+			return nil, 0, fmt.Errorf("marshaling request body: %w", err)
+		}
+		bodyReader = bytes.NewReader(data)
+	}
+
+	req, err := http.NewRequest(method, url, bodyReader)
+	if err != nil {
+		return nil, 0, fmt.Errorf("creating request: %w", err)
+	}
+
+	req.Header.Set("Authorization", "Bearer "+tokens.AccessToken)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, 0, fmt.Errorf("making request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Handle 401 — try refresh
+	if resp.StatusCode == http.StatusUnauthorized && tokens.RefreshToken != "" {
+		newTokens, refreshErr := auth.RefreshAccessToken(c.cfg.Server, c.cfg.ClientID, tokens)
+		if refreshErr != nil {
+			return nil, resp.StatusCode, fmt.Errorf("session expired: run 'sunshine auth login' to re-authenticate")
+		}
+		if err := auth.SaveTokens(newTokens); err != nil {
+			return nil, resp.StatusCode, fmt.Errorf("saving refreshed tokens: %w", err)
+		}
+
+		if body != nil {
+			data, _ := json.Marshal(body)
+			bodyReader = bytes.NewReader(data)
+		}
+		req, _ = http.NewRequest(method, url, bodyReader)
+		req.Header.Set("Authorization", "Bearer "+newTokens.AccessToken)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Accept", "application/json")
+
+		resp, err = c.httpClient.Do(req)
+		if err != nil {
+			return nil, 0, fmt.Errorf("retrying request: %w", err)
+		}
+		defer resp.Body.Close()
+	}
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, resp.StatusCode, fmt.Errorf("reading response: %w", err)
+	}
+
+	return respBody, resp.StatusCode, nil
+}
+
 // Scooters
 
 func (c *Client) ListScooters(limit, offset int) ([]Scooter, error) {

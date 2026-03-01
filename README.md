@@ -87,6 +87,19 @@ sunshine trips show <trip-id>
 
 All commands accept `--json` for machine-readable output.
 
+## Raw API access
+
+```bash
+sunshine api /scooters                              # GET
+sunshine api /scooters/3                            # GET with path
+sunshine api /scooters/3/trips?limit=5              # GET with query params
+sunshine api /scooters/3/lock -X POST               # POST
+sunshine api /scooters/3/blinkers -d '{"state":"left"}'  # POST with JSON body
+sunshine api /scooters/3/alarm -X POST -d '{"duration":"10s"}'
+```
+
+Paths are relative to `/api/v1/`. Method defaults to GET, or POST when `-d` is given.
+
 ## Man pages
 
 ```bash
