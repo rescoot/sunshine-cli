@@ -14,6 +14,8 @@ cd sunshine-cli
 make build
 ```
 
+Pre-built binaries for Linux, macOS, and Windows are available on the [releases page](https://github.com/rescoot/sunshine-cli/releases).
+
 ## Authentication
 
 The CLI uses OAuth2 with PKCE to authenticate against your Sunshine instance:
@@ -28,17 +30,14 @@ Tokens are stored in `~/.config/sunshine/tokens.json`.
 
 ## Configuration
 
-```bash
-# Set your Sunshine server (default: https://sunshine.rescoot.org)
-sunshine config set server https://sunshine.example.com
+Edit `~/.config/sunshine/config.yaml` to set defaults:
 
-# Set a default scooter so you don't need to pass an ID every time
-sunshine config set default_scooter 1
-
-sunshine config show
+```yaml
+server: https://sunshine.rescoot.org    # default
+default_scooter: 3                      # skip the [id] argument
 ```
 
-Config is stored in `~/.config/sunshine/config.yaml`.
+You can also override per-command with `--server` and `--scooter` flags.
 
 ## Usage
 
@@ -47,24 +46,24 @@ Config is stored in `~/.config/sunshine/config.yaml`.
 sunshine scooters list
 sunshine scooters show <id>
 
-# Control commands
+# Control commands (id is optional if default_scooter is set)
 sunshine lock [id]
 sunshine unlock [id]
 sunshine honk [id]
-sunshine blinkers [id] <left|right|both|warning|off>
+sunshine blinkers [id] <left|right|both|off>
 sunshine seatbox [id]
 sunshine ping [id]
 sunshine state [id]
 sunshine locate [id]
-sunshine alarm [id] arm|disarm|trigger
+sunshine alarm [id] [--duration 5s]
 sunshine hibernate [id]
 
 # Trips
-sunshine trips [id] [--limit N]
+sunshine trips [id]
 
 # Navigation destination
 sunshine destination show [id]
-sunshine destination set [id] --lat LAT --lng LNG [--address ADDR]
+sunshine destination set [id] <lat> <lng> [--address ADDR]
 sunshine destination clear [id]
 ```
 
