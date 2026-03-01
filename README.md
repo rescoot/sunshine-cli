@@ -33,56 +33,64 @@ Tokens are stored in `~/.config/sunshine/tokens.json`.
 ```bash
 sunshine config                          # Show current config
 sunshine config set server https://...   # Set server URL
-sunshine config set default_scooter 3    # Skip the [id] argument
+sunshine config set default_scooter 3    # Set default scooter
 sunshine config path                     # Print config file location
 ```
 
 Config file: `~/.config/sunshine/config.yaml`. Override per-command with `--server` and `--scooter` flags.
 
-## Scooter ID resolution
+## Scooter selection
 
-The `[id]` argument is optional. The CLI resolves the scooter ID in order:
+The scooter is resolved in order:
 
-1. Positional argument
-2. `--scooter` flag
-3. `default_scooter` from config
-4. Auto-detect (if you have exactly one scooter)
+1. `--scooter` flag
+2. `default_scooter` from config
+3. Auto-detect (if you have exactly one scooter)
 
 ## Usage
 
 ```bash
 # List scooters
 sunshine scooters list [--limit 20] [--offset 0]
-sunshine scooters show [id]
+sunshine scooters show
 
 # Control commands
-sunshine lock [id]
-sunshine unlock [id]
-sunshine honk [id]
-sunshine blinkers [id] <left|right|both|off>
-sunshine seatbox [id]
-sunshine ping [id]
-sunshine state [id]
-sunshine locate [id]
-sunshine hibernate [id]
+sunshine lock
+sunshine unlock
+sunshine honk
+sunshine blinkers <left|right|both|off>
+sunshine seatbox
+sunshine ping
+sunshine state
+sunshine locate
+sunshine hibernate
 
 # Alarm system
-sunshine alarm [id]                      # Show alarm state
-sunshine alarm arm [id]                  # Arm alarm
-sunshine alarm disarm [id]              # Disarm alarm
-sunshine alarm trigger [id] [--duration 5s]  # Sound alarm
-sunshine alarm stop [id]                 # Silence active alarm
+sunshine alarm                           # Show alarm state
+sunshine alarm arm                       # Arm alarm
+sunshine alarm disarm                    # Disarm alarm
+sunshine alarm trigger [--duration 5s]   # Sound alarm
+sunshine alarm stop                      # Silence active alarm
 
 # Navigation
-sunshine navigate [id] <lat> <lng> [title]   # Set destination
-sunshine navigate show [id]                   # Show current destination
-sunshine navigate clear [id]                  # Clear destination
+sunshine navigate <lat> <lng> [title]    # Set destination
+sunshine navigate show                   # Show current destination
+sunshine navigate clear                  # Clear destination
 
 # Trips
-sunshine trips [id] [--limit 20] [--offset 0]
+sunshine trips list [--limit 20] [--offset 0]
+sunshine trips show <trip-id>
 ```
 
 All commands accept `--json` for machine-readable output.
+
+## Man pages
+
+```bash
+make man              # Generate man pages to man/
+make install-man      # Install to system man path
+man sunshine          # View main man page
+```
 
 ## License
 

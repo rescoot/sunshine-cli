@@ -11,12 +11,12 @@ import (
 var alarmDuration string
 
 var alarmCmd = &cobra.Command{
-	Use:   "alarm [scooter-id]",
+	Use:   "alarm",
 	Short: "Control the alarm system",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		// No subcommand: show current alarm state from scooter detail
-		id, err := resolveScooterID(args)
+		// No subcommand: show current alarm state
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -40,11 +40,11 @@ var alarmCmd = &cobra.Command{
 }
 
 var alarmTriggerCmd = &cobra.Command{
-	Use:   "trigger [scooter-id]",
+	Use:   "trigger",
 	Short: "Trigger the alarm for a duration",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -55,11 +55,11 @@ var alarmTriggerCmd = &cobra.Command{
 }
 
 var alarmArmCmd = &cobra.Command{
-	Use:   "arm [scooter-id]",
+	Use:   "arm",
 	Short: "Arm the alarm system",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -70,11 +70,11 @@ var alarmArmCmd = &cobra.Command{
 }
 
 var alarmDisarmCmd = &cobra.Command{
-	Use:   "disarm [scooter-id]",
+	Use:   "disarm",
 	Short: "Disarm the alarm system",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -85,11 +85,11 @@ var alarmDisarmCmd = &cobra.Command{
 }
 
 var alarmStopCmd = &cobra.Command{
-	Use:   "stop [scooter-id]",
+	Use:   "stop",
 	Short: "Stop an active alarm",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)

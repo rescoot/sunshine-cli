@@ -10,52 +10,31 @@ import (
 )
 
 var navigateCmd = &cobra.Command{
-	Use:   "navigate [scooter-id] <lat> <lng> [title]",
+	Use:   "navigate <lat> <lng> [title]",
 	Short: "Set navigation destination",
-	Long:  "Set a navigation destination. Pass lat/lng as positional args, optionally with a title.\nUse 'navigate show' to view or 'navigate clear' to remove the current destination.",
-	Args:  cobra.RangeArgs(2, 4),
+	Long:  "Set a navigation destination by providing lat/lng coordinates and an optional title.\nUse 'navigate show' to view or 'navigate clear' to remove the current destination.",
+	Args:  cobra.RangeArgs(2, 3),
 	Run: func(cmd *cobra.Command, args []string) {
-		var id int
-		var latStr, lngStr, title string
-		var err error
-
-		// Try parsing first arg as scooter ID
-		if len(args) >= 3 {
-			if tryID, parseErr := strconv.Atoi(args[0]); parseErr == nil && tryID > 0 {
-				id, err = resolveScooterID(args[:1])
-				latStr = args[1]
-				lngStr = args[2]
-				if len(args) == 4 {
-					title = args[3]
-				}
-			} else {
-				// First arg is lat, not an ID
-				id, err = resolveScooterID(nil)
-				latStr = args[0]
-				lngStr = args[1]
-				title = args[2]
-			}
-		} else {
-			// Exactly 2 args: lat lng
-			id, err = resolveScooterID(nil)
-			latStr = args[0]
-			lngStr = args[1]
-		}
-
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
 
-		lat, err := strconv.ParseFloat(latStr, 64)
+		lat, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid latitude: %s\n", latStr)
+			fmt.Fprintf(os.Stderr, "Invalid latitude: %s\n", args[0])
 			os.Exit(1)
 		}
-		lng, err := strconv.ParseFloat(lngStr, 64)
+		lng, err := strconv.ParseFloat(args[1], 64)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid longitude: %s\n", lngStr)
+			fmt.Fprintf(os.Stderr, "Invalid longitude: %s\n", args[1])
 			os.Exit(1)
+		}
+
+		title := ""
+		if len(args) == 3 {
+			title = args[2]
 		}
 
 		resp, err := apiClient.SetDestination(id, lat, lng, title)
@@ -64,11 +43,11 @@ var navigateCmd = &cobra.Command{
 }
 
 var navigateShowCmd = &cobra.Command{
-	Use:   "show [scooter-id]",
+	Use:   "show",
 	Short: "Show current navigation destination",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -83,11 +62,11 @@ var navigateShowCmd = &cobra.Command{
 }
 
 var navigateClearCmd = &cobra.Command{
-	Use:   "clear [scooter-id]",
+	Use:   "clear",
 	Short: "Clear navigation destination",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)

@@ -9,11 +9,11 @@ import (
 )
 
 var honkCmd = &cobra.Command{
-	Use:   "honk [scooter-id]",
+	Use:   "honk",
 	Short: "Sound the horn",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, err := resolveScooterID(args)
+		id, err := resolveScooterID(nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)

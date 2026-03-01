@@ -52,15 +52,9 @@ func init() {
 	rootCmd.PersistentFlags().IntVar(&scooterID, "scooter", 0, "Scooter ID (overrides default)")
 }
 
-// resolveScooterID returns the scooter ID from args, flag, config default, or auto-detection.
-func resolveScooterID(args []string) (int, error) {
-	if len(args) > 0 {
-		var id int
-		if _, err := fmt.Sscanf(args[0], "%d", &id); err == nil && id > 0 {
-			return id, nil
-		}
-	}
-
+// resolveScooterID returns the scooter ID from --scooter flag, config default, or auto-detection.
+// The args parameter is ignored (kept for signature compatibility) — use --scooter flag instead.
+func resolveScooterID(_ []string) (int, error) {
 	if scooterID > 0 {
 		return scooterID, nil
 	}
@@ -93,5 +87,5 @@ func resolveScooterID(args []string) (int, error) {
 		}
 	}
 
-	return 0, fmt.Errorf("scooter ID required — pass as argument, use --scooter flag, or set default_scooter in config")
+	return 0, fmt.Errorf("scooter ID required — use --scooter flag or set default_scooter in config")
 }
