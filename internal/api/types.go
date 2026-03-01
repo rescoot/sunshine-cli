@@ -1,6 +1,10 @@
 package api
 
-import "time"
+import (
+	"strconv"
+	"strings"
+	"time"
+)
 
 type Scooter struct {
 	ID                   int                    `json:"id"`
@@ -82,9 +86,25 @@ type Location struct {
 }
 
 type Destination struct {
-	Latitude  *float64 `json:"latitude"`
-	Longitude *float64 `json:"longitude"`
-	Address   string   `json:"address"`
+	Latitude  *StringFloat `json:"latitude"`
+	Longitude *StringFloat `json:"longitude"`
+	Address   string       `json:"address"`
+}
+
+// StringFloat handles JSON values that may be either a number or a string-encoded number.
+type StringFloat float64
+
+func (sf *StringFloat) UnmarshalJSON(data []byte) error {
+	s := strings.Trim(string(data), "\"")
+	if s == "null" || s == "" {
+		return nil
+	}
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return err
+	}
+	*sf = StringFloat(f)
+	return nil
 }
 
 type CommandResponse struct {
